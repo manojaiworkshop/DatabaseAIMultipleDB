@@ -172,8 +172,8 @@ lerna-debug.log*
 *.env
 
 # Configuration files with secrets
-# config.yml
-# app_config.yml
+config.yml
+app_config.yml
 # Keep example configs
 !config.example.yml
 !*.example.yml
