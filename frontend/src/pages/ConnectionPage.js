@@ -95,7 +95,22 @@ const ConnectionPage = () => {
       const response = await api.connectDatabase(formData);
       
       if (response.success) {
-        setSuccess(`Connected successfully! Database: ${response.database_info.database}`);
+        // Handle different database types in success message
+        const dbInfo = response.database_info || {};
+        let dbIdentifier = '';
+        
+        if (formData.database_type === 'sqlite') {
+          // For SQLite, show just the filename
+          const filePath = dbInfo.database || '';
+          const fileName = filePath.split('/').pop() || filePath;
+          dbIdentifier = fileName;
+        } else if (formData.database_type === 'neo4j') {
+          dbIdentifier = dbInfo.database || 'neo4j';
+        } else {
+          dbIdentifier = dbInfo.database || 'connected';
+        }
+        
+        setSuccess(`Connected successfully! Database: ${dbIdentifier}`);
         
         // Extract schema from connection response
         const schema = response.database_info?.schema || null;

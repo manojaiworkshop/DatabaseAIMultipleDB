@@ -133,7 +133,9 @@ class SQLiteAdapter(BaseDatabaseAdapter):
                 'schema_name': 'main',
                 'database_type': self.database_type,
                 'tables': [],
+                'views': [],
                 'total_tables': len(tables),
+                'total_views': 0,
                 'timestamp': datetime.now().isoformat()
             }
             
