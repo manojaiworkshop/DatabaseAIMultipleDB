@@ -1,0 +1,179 @@
+ontology:
+  concepts:
+    DeviceStatus:
+      confidence: 0.95
+      description: The current status of a network device
+      properties:
+      - status_name
+      - severity_level
+      relationships:
+      - is reported by NetworkDevice
+      - can be updated by NetworkDevice
+      tables:
+      - public.device_status
+    HardwareInfo:
+      confidence: 0.95
+      description: Information about the hardware of a network device
+      properties:
+      - hardware_type
+      - manufacturer
+      - model_number
+      relationships:
+      - is associated with NetworkDevice
+      - can be updated by NetworkDevice
+      tables:
+      - public.hardware_info
+    MaintenanceLog:
+      confidence: 0.95
+      description: A record of maintenance activities performed on a network device
+      properties:
+      - device_id
+      - maintenance_date
+      - duration_hours
+      relationships:
+      - is related to NetworkDevice
+      - can be updated by NetworkDevice
+      tables:
+      - public.maintenance_logs
+    NetworkAlert:
+      confidence: 0.95
+      description: A notification about a network device's status or performance
+      properties:
+      - device_id
+      - alert_message
+      - alert_timestamp
+      relationships:
+      - is related to NetworkDevice
+      - can be acknowledged by NetworkDevice
+      tables:
+      - public.network_alerts
+    NetworkDevice:
+      confidence: 0.95
+      description: A device connected to a network
+      properties:
+      - device_name
+      - ip_address
+      - location
+      relationships:
+      - has DeviceStatus
+      - has HardwareInfo
+      - has MaintenanceLogs
+      tables:
+      - public.network_devices
+  metadata:
+    concept_count: 5
+    connection_id: testing_10.198.231.246_5432
+    generated_at: '2025-11-12T08:14:02.090888'
+    property_count: 0
+    relationship_count: 4
+    table_count: 5
+  relationships:
+  - confidence: 1.0
+    from: NetworkDevice
+    to: DeviceStatus
+    type: has
+    via_tables:
+    - public.device_status
+  - confidence: 1.0
+    from: NetworkDevice
+    to: HardwareInfo
+    type: has
+    via_tables:
+    - public.hardware_info
+  - confidence: 1.0
+    from: NetworkDevice
+    to: MaintenanceLog
+    type: generates
+    via_tables:
+    - public.maintenance_logs
+  - confidence: 1.0
+    from: NetworkDevice
+    to: NetworkAlert
+    type: generates
+    via_tables:
+    - public.network_alerts
+  rules:
+  - column: status_id
+    description: device_status.status_id is required
+    table: device_status
+    type: required_field
+  - column: status_name
+    description: device_status.status_name is required
+    table: device_status
+    type: required_field
+  - column: hardware_id
+    description: hardware_info.hardware_id is required
+    table: hardware_info
+    type: required_field
+  - column: hardware_type
+    description: hardware_info.hardware_type is required
+    table: hardware_info
+    type: required_field
+  - column: manufacturer
+    description: hardware_info.manufacturer is required
+    table: hardware_info
+    type: required_field
+  - column: model_number
+    description: hardware_info.model_number is required
+    table: hardware_info
+    type: required_field
+  - column: purchase_date
+    description: hardware_info.purchase_date is required
+    table: hardware_info
+    type: required_field
+  - column: unit_price
+    description: hardware_info.unit_price is required
+    table: hardware_info
+    type: required_field
+  - column: log_id
+    description: maintenance_logs.log_id is required
+    table: maintenance_logs
+    type: required_field
+  - column: maintenance_type
+    description: maintenance_logs.maintenance_type is required
+    table: maintenance_logs
+    type: required_field
+  - column: performed_by
+    description: maintenance_logs.performed_by is required
+    table: maintenance_logs
+    type: required_field
+  - column: maintenance_date
+    description: maintenance_logs.maintenance_date is required
+    table: maintenance_logs
+    type: required_field
+  - column: alert_id
+    description: network_alerts.alert_id is required
+    table: network_alerts
+    type: required_field
+  - column: alert_type
+    description: network_alerts.alert_type is required
+    table: network_alerts
+    type: required_field
+  - column: alert_message
+    description: network_alerts.alert_message is required
+    table: network_alerts
+    type: required_field
+  - column: alert_timestamp
+    description: network_alerts.alert_timestamp is required
+    table: network_alerts
+    type: required_field
+  - column: device_id
+    description: network_devices.device_id is required
+    table: network_devices
+    type: required_field
+  - column: device_name
+    description: network_devices.device_name is required
+    table: network_devices
+    type: required_field
+  - column: ip_address
+    description: network_devices.ip_address is required
+    table: network_devices
+    type: required_field
+  - column: location
+    description: network_devices.location is required
+    table: network_devices
+    type: required_field
+  - column: installation_date
+    description: network_devices.installation_date is required
+    table: network_devices
+    type: required_field

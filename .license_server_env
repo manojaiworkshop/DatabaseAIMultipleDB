@@ -1,0 +1,6 @@
+# PGAIView License Server Configuration
+# Generated: Sun 16 Nov 2025 04:29:30 PM IST
+
+export LICENSE_SECRET_KEY="KzRLB2BLq_A2u9K4AGhiMnic8LIwXTJ0Y-7bLr77mfY="
+export ADMIN_KEY="pgaiview-admin-2024"
+export PORT="5000"

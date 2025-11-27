@@ -1,0 +1,65 @@
+# .dockerignore
+# Ignore unnecessary files during Docker build
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+databaseenv/
+venv/
+env/
+ENV/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.spec
+!backend.spec
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Test files
+test_*.py
+*_test.py
+
+# Database files
+*.sql
+*.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+
+# Node modules (will be reinstalled)
+node_modules/
+
+# Frontend build (will be rebuilt)
+frontend/build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

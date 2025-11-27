@@ -1,0 +1,68 @@
+# Multi-stage build for DatabaseAI Backend with PyInstaller
+# Stage 1: Build executable
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    make \
+    libpq-dev \
+    binutils \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt .
+COPY backend/requirements.txt backend/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir pyinstaller
+
+# Copy application files
+COPY . .
+
+# Build executable with PyInstaller
+RUN echo "Starting PyInstaller build..." && \
+    pyinstaller backend.spec --clean --noconfirm && \
+    echo "Build completed. Checking dist directory:" && \
+    ls -la dist/ && \
+    echo "Verifying executable exists:" && \
+    test -f dist/databaseai-backend && echo "✓ Executable found" || (echo "✗ Executable not found" && exit 1)
+
+# Stage 2: Runtime image
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy executable from builder
+COPY --from=builder /app/dist/databaseai-backend /app/databaseai-backend
+COPY --from=builder /app/app_config.yml /app/app_config.yml
+
+# Make executable
+RUN chmod +x /app/databaseai-backend
+
+# Create non-root user
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
+# Expose port
+EXPOSE 8088
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8088/api/v1/health || exit 1
+
+# Run PyInstaller executable
+CMD ["./databaseai-backend"]

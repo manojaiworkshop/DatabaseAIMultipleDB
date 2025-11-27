@@ -1,0 +1,55 @@
+services:
+  # Oracle Database XE (Express Edition)
+  oracle-db:
+    image: gvenzl/oracle-xe:latest
+    container_name: oracle-db
+    ports:
+      - "1521:1521"
+      - "5500:5500"  # Oracle Enterprise Manager Express
+    environment:
+      # Set the password for SYS, SYSTEM and PDBADMIN users
+      ORACLE_PASSWORD: oracle123
+      # Optional: Set a custom database name
+      # ORACLE_DATABASE: mydb
+      # Enable archive log mode
+      ORACLE_EDITION: xe
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./init-oracle:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - databaseai-network
+
+  # DatabaseAI Application
+  databaseai:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    container_name: databaseai-oracle
+    ports:
+      - "80:80"
+    environment:
+      - DATABASE_TYPE=oracle
+      - ORACLE_HOST=oracle-db
+      - ORACLE_PORT=1521
+      - ORACLE_SERVICE_NAME=XEPDB1
+      - ORACLE_USER=system
+      - ORACLE_PASSWORD=oracle123
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    networks:
+      - databaseai-network
+    restart: unless-stopped
+
+volumes:
+  oracle-data:
+    driver: local
+
+networks:
+  databaseai-network:
+    driver: bridge

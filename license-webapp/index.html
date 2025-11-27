@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PGAIView License Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-key"></i>
+                    <span>PGAIView License Portal</span>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-tab="generate">
+                        <i class="fas fa-plus-circle"></i> Generate License
+                    </button>
+                    <button class="nav-btn" data-tab="validate">
+                        <i class="fas fa-check-circle"></i> Validate License
+                    </button>
+                    <button class="nav-btn" data-tab="renew">
+                        <i class="fas fa-sync"></i> Renew License
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Generate License Tab -->
+            <section id="generate" class="tab-content active">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <h2><i class="fas fa-rocket"></i> Generate New License</h2>
+                        <p>Create a new license for your PGAIView deployment</p>
+                    </div>
+                    <form id="generateForm" class="form">
+                        <div class="form-group">
+                            <label for="gen-email">
+                                <i class="fas fa-envelope"></i> Email Address
+                            </label>
+                            <input 
+                                type="email" 
+                                id="gen-email" 
+                                placeholder="your.email@example.com" 
+                                required
+                            >
+                            <small class="help-text">Enter your email address for license registration</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gen-deployment-id">
+                                <i class="fas fa-server"></i> Deployment ID
+                            </label>
+                            <div class="input-with-button">
+                                <input 
+                                    type="text" 
+                                    id="gen-deployment-id" 
+                                    placeholder="deploy-20251102-ABC12345" 
+                                    required
+                                >
+                                <button type="button" class="btn-secondary" id="gen-random-id">
+                                    <i class="fas fa-random"></i> Generate
+                                </button>
+                            </div>
+                            <small class="help-text">Unique identifier for your deployment</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gen-license-type">
+                                <i class="fas fa-tag"></i> License Type
+                            </label>
+                            <div class="license-types">
+                                <label class="radio-card">
+                                    <input type="radio" name="license-type" value="trial" checked>
+                                    <div class="radio-content">
+                                        <div class="radio-header">
+                                            <i class="fas fa-flask"></i>
+                                            <span class="radio-title">Trial</span>
+                                        </div>
+                                        <span class="radio-badge">10 Days</span>
+                                        <p class="radio-desc">Perfect for testing</p>
+                                    </div>
+                                </label>
+
+                                <label class="radio-card">
+                                    <input type="radio" name="license-type" value="standard">
+                                    <div class="radio-content">
+                                        <div class="radio-header">
+                                            <i class="fas fa-star"></i>
+                                            <span class="radio-title">Standard</span>
+                                        </div>
+                                        <span class="radio-badge">60 Days</span>
+                                        <p class="radio-desc">2 months access</p>
+                                    </div>
+                                </label>
+
+                                <label class="radio-card">
+                                    <input type="radio" name="license-type" value="enterprise">
+                                    <div class="radio-content">
+                                        <div class="radio-header">
+                                            <i class="fas fa-crown"></i>
+                                            <span class="radio-title">Enterprise</span>
+                                        </div>
+                                        <span class="radio-badge">365 Days</span>
+                                        <p class="radio-desc">Full year license</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gen-admin-key">
+                                <i class="fas fa-lock"></i> Admin Key
+                            </label>
+                            <input 
+                                type="password" 
+                                id="gen-admin-key" 
+                                placeholder="Enter admin key" 
+                                required
+                            >
+                            <small class="help-text">Admin authentication key (default: pgaiview-admin-2024)</small>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="gen-submit-btn">
+                            <i class="fas fa-magic"></i> Generate License
+                        </button>
+                    </form>
+
+                    <!-- Result Display -->
+                    <div id="gen-result" class="result hidden"></div>
+                </div>
+            </section>
+
+            <!-- Validate License Tab -->
+            <section id="validate" class="tab-content">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <h2><i class="fas fa-shield-alt"></i> Validate License</h2>
+                        <p>Check the validity and details of your license</p>
+                    </div>
+                    <form id="validateForm" class="form">
+                        <div class="form-group">
+                            <label for="val-license-key">
+                                <i class="fas fa-key"></i> License Key
+                            </label>
+                            <textarea 
+                                id="val-license-key" 
+                                rows="4" 
+                                placeholder="Paste your license key here..." 
+                                required
+                            ></textarea>
+                            <small class="help-text">Enter your complete license key to validate</small>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="val-submit-btn">
+                            <i class="fas fa-check"></i> Validate License
+                        </button>
+                    </form>
+
+                    <!-- Result Display -->
+                    <div id="val-result" class="result hidden"></div>
+                </div>
+            </section>
+
+            <!-- Renew License Tab -->
+            <section id="renew" class="tab-content">
+                <div class="card fade-in">
+                    <div class="card-header">
+                        <h2><i class="fas fa-redo-alt"></i> Renew License</h2>
+                        <p>Extend your existing license with a new key</p>
+                    </div>
+                    <form id="renewForm" class="form">
+                        <div class="form-group">
+                            <label for="renew-license-key">
+                                <i class="fas fa-key"></i> Current License Key
+                            </label>
+                            <textarea 
+                                id="renew-license-key" 
+                                rows="4" 
+                                placeholder="Paste your current license key..." 
+                                required
+                            ></textarea>
+                            <small class="help-text">Your existing license key that needs renewal</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="renew-admin-key">
+                                <i class="fas fa-lock"></i> Admin Key
+                            </label>
+                            <input 
+                                type="password" 
+                                id="renew-admin-key" 
+                                placeholder="Enter admin key" 
+                                required
+                            >
+                            <small class="help-text">Admin authentication key for renewal</small>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="renew-submit-btn">
+                            <i class="fas fa-sync-alt"></i> Renew License
+                        </button>
+                    </form>
+
+                    <!-- Result Display -->
+                    <div id="renew-result" class="result hidden"></div>
+                </div>
+            </section>
+
+            <!-- License Info Section -->
+            <section class="info-section">
+                <div class="info-cards">
+                    <div class="info-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Quick Generation</h3>
+                        <p>Generate licenses instantly with just a few clicks</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Secure & Encrypted</h3>
+                        <p>All licenses are encrypted and cryptographically signed</p>
+                    </div>
+                    <div class="info-card">
+                        <i class="fas fa-sync-alt"></i>
+                        <h3>Easy Renewal</h3>
+                        <p>Renew your licenses seamlessly without downtime</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 PGAIView. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-book"></i> Documentation</a>
+                <a href="#"><i class="fas fa-life-ring"></i> Support</a>
+                <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Settings Modal (for API URL) -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-cog"></i> Settings</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="api-url">License Server URL</label>
+                    <input type="text" id="api-url" value="http://localhost:5000">
+                    <small class="help-text">URL of your license server</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="save-settings">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Button -->
+    <button class="settings-btn" id="open-settings">
+        <i class="fas fa-cog"></i>
+    </button>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

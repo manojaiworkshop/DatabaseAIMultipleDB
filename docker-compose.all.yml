@@ -1,0 +1,192 @@
+# ====================================
+# Docker Compose - All Databases Testing
+# Includes: PostgreSQL, MySQL, Oracle, Neo4j
+# SQLite: No container needed (file-based)
+# ====================================
+
+services:
+  # ====================================
+  # PostgreSQL Database
+  # ====================================
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: testdb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - databaseai-network
+    restart: unless-stopped
+
+  # ====================================
+  # MySQL Database
+  # ====================================
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql123
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysql123
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init-mysql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmysql123"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - databaseai-network
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+
+  # ====================================
+  # Oracle Database XE (Express Edition)
+  # ====================================
+  oracle-db:
+    image: gvenzl/oracle-xe:latest
+    container_name: oracle-db
+    ports:
+      - "1521:1521"
+      - "5500:5500"  # Oracle Enterprise Manager Express
+    environment:
+      ORACLE_PASSWORD: oracle123
+      ORACLE_EDITION: xe
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./init-oracle:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - databaseai-network
+    restart: unless-stopped
+    shm_size: 1g
+
+  # ====================================
+  # Neo4j Graph Database
+  # ====================================
+  neo4j-db:
+    image: neo4j:5.15-community
+    container_name: neo4j-db
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    environment:
+      NEO4J_AUTH: neo4j/neo4j123
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: "yes"
+      # Enable APOC procedures
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+      NEO4J_dbms_security_procedures_allowlist: apoc.*
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+      - neo4j-import:/var/lib/neo4j/import
+      - neo4j-plugins:/plugins
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:7474 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - databaseai-network
+    restart: unless-stopped
+
+  # ====================================
+  # DatabaseAI Application
+  # ====================================
+  databaseai:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    container_name: databaseai-app
+    ports:
+      - "80:80"
+      - "8000:8000"
+    environment:
+      # App Configuration
+      - PYTHONUNBUFFERED=1
+      # PostgreSQL Connection (default)
+      - DATABASE_TYPE=postgresql
+      - POSTGRES_HOST=postgres-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=testdb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres123
+      # MySQL Connection
+      - MYSQL_HOST=mysql-db
+      - MYSQL_PORT=3306
+      - MYSQL_DB=testdb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=mysql123
+      # Oracle Connection
+      - ORACLE_HOST=oracle-db
+      - ORACLE_PORT=1521
+      - ORACLE_SERVICE_NAME=XEPDB1
+      - ORACLE_USER=system
+      - ORACLE_PASSWORD=oracle123
+      # Neo4j Connection
+      - NEO4J_URI=bolt://neo4j-db:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=neo4j123
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      mysql-db:
+        condition: service_healthy
+      oracle-db:
+        condition: service_healthy
+      neo4j-db:
+        condition: service_healthy
+    networks:
+      - databaseai-network
+    restart: unless-stopped
+    volumes:
+      # Mount config file
+      - ./app_config.yml:/usr/dataconfig/app_config.yml:ro
+      # SQLite data directory (for file-based SQLite databases)
+      - ./sqlite-data:/app/sqlite-data
+
+# ====================================
+# Volumes
+# ====================================
+volumes:
+  postgres-data:
+    driver: local
+  mysql-data:
+    driver: local
+  oracle-data:
+    driver: local
+  neo4j-data:
+    driver: local
+  neo4j-logs:
+    driver: local
+  neo4j-import:
+    driver: local
+  neo4j-plugins:
+    driver: local
+
+# ====================================
+# Networks
+# ====================================
+networks:
+  databaseai-network:
+    driver: bridge

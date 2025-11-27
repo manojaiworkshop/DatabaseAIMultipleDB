@@ -1,0 +1,186 @@
+{
+  "metadata": {
+    "domain": "procurement",
+    "version": "1.0",
+    "created_by": "OntologyBuilder"
+  },
+  "concepts": {
+    "Vendor": {
+      "description": "A supplier or seller of products/services",
+      "synonyms": [
+        "supplier",
+        "seller",
+        "merchant",
+        "provider",
+        "supplyer"
+      ],
+      "table": "purchase_order",
+      "properties": {
+        "name": {
+          "column": "vendorgroup",
+          "semantic_type": "identifier",
+          "keywords": [
+            "vendor",
+            "name",
+            "supplier name",
+            "seller",
+            "merchant name"
+          ],
+          "description": "Vendor identifier or name",
+          "data_type": "text",
+          "required": true
+        },
+        "category": {
+          "column": "vendorcategory",
+          "semantic_type": "classification",
+          "keywords": [
+            "category",
+            "type",
+            "class",
+            "classification"
+          ],
+          "description": "Type or category of vendor",
+          "data_type": "text",
+          "required": false
+        },
+        "location": {
+          "column": "country",
+          "semantic_type": "geography",
+          "keywords": [
+            "country",
+            "location",
+            "region",
+            "from",
+            "based in"
+          ],
+          "description": "Geographical location of vendor",
+          "data_type": "text",
+          "required": false
+        }
+      }
+    },
+    "Order": {
+      "description": "A purchase order or transaction",
+      "synonyms": [
+        "purchase",
+        "po",
+        "purchase order",
+        "transaction"
+      ],
+      "table": "purchase_order",
+      "properties": {
+        "id": {
+          "column": "id",
+          "semantic_type": "identifier",
+          "keywords": [
+            "id",
+            "order id",
+            "po number",
+            "reference"
+          ],
+          "description": "Order identifier",
+          "data_type": "integer",
+          "required": true
+        },
+        "total": {
+          "column": "totalinrpo",
+          "semantic_type": "currency",
+          "keywords": [
+            "total",
+            "amount",
+            "value",
+            "price",
+            "cost",
+            "sum"
+          ],
+          "description": "Total order amount in INR",
+          "data_type": "numeric",
+          "required": true
+        },
+        "date": {
+          "column": "createdon",
+          "semantic_type": "temporal",
+          "keywords": [
+            "date",
+            "created",
+            "when",
+            "time",
+            "timestamp"
+          ],
+          "description": "Order creation date/time",
+          "data_type": "timestamp",
+          "required": true
+        },
+        "status": {
+          "column": "status",
+          "semantic_type": "status",
+          "keywords": [
+            "status",
+            "state",
+            "condition"
+          ],
+          "description": "Order status",
+          "data_type": "text",
+          "required": false
+        }
+      }
+    },
+    "Product": {
+      "description": "An item or product being purchased",
+      "synonyms": [
+        "item",
+        "goods",
+        "merchandise",
+        "sku"
+      ],
+      "table": "purchase_order",
+      "properties": {
+        "name": {
+          "column": "productname",
+          "semantic_type": "identifier",
+          "keywords": [
+            "product",
+            "item",
+            "name",
+            "sku"
+          ],
+          "description": "Product name or identifier",
+          "data_type": "text",
+          "required": false
+        },
+        "category": {
+          "column": "productcategory",
+          "semantic_type": "classification",
+          "keywords": [
+            "product category",
+            "type",
+            "class"
+          ],
+          "description": "Product category or type",
+          "data_type": "text",
+          "required": false
+        }
+      }
+    }
+  },
+  "relationships": {
+    "supplies": {
+      "from": "Vendor",
+      "to": "Product",
+      "type": "one-to-many",
+      "description": "Vendor provides or sells products"
+    },
+    "contains": {
+      "from": "Order",
+      "to": "Product",
+      "type": "many-to-many",
+      "description": "Order includes products"
+    },
+    "purchased_from": {
+      "from": "Order",
+      "to": "Vendor",
+      "type": "many-to-one",
+      "description": "Order was purchased from vendor"
+    }
+  }
+}

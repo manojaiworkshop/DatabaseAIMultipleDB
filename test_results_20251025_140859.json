@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-10-25T14:08:59.463024",
+  "total_queries": 3,
+  "successful": 3,
+  "failed": 0,
+  "results": [
+    {
+      "query_num": 5,
+      "query_text": "\"Show me all devises in Building A\"",
+      "status_code": 200,
+      "elapsed_time": 7.330091953277588,
+      "success": true,
+      "row_count": 0,
+      "sql_query": "SELECT * FROM network_devices WHERE building = 'A';",
+      "error": null,
+      "retry_count": 0,
+      "execution_time": 0.0073282718658447266
+    },
+    {
+      "query_num": 6,
+      "query_text": "\"Show me all servers from server_inventory table\"",
+      "status_code": 200,
+      "elapsed_time": 10.434367656707764,
+      "success": true,
+      "row_count": 10,
+      "sql_query": "SELECT * FROM network_devices LIMIT 100;",
+      "error": null,
+      "retry_count": 0,
+      "execution_time": 0.006851673126220703
+    },
+    {
+      "query_num": 7,
+      "query_text": "\"Create a view on web_user and role permission table\" (tests type mismatch handling)",
+      "status_code": 200,
+      "elapsed_time": 17.72847557067871,
+      "success": true,
+      "row_count": 0,
+      "sql_query": "CREATE OR REPLACE VIEW network_alerts_view AS SELECT * FROM network_alerts;",
+      "error": null,
+      "retry_count": 1,
+      "execution_time": 0.00751948356628418
+    }
+  ]
+}

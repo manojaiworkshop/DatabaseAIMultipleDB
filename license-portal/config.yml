@@ -1,0 +1,280 @@
+# PGAIView License Portal Configuration
+# Version: 2.0.0
+
+# ============================================================================
+# Server Configuration
+# ============================================================================
+server:
+  backend:
+    host: "0.0.0.0"
+    port: 8000
+    reload: true
+    workers: 1
+    log_level: "info"
+    
+  frontend:
+    host: "0.0.0.0"
+    port: 3000
+    
+# ============================================================================
+# Security Configuration
+# ============================================================================
+security:
+  # Admin key for license generation and renewal
+  # IMPORTANT: Change this in production!
+  admin_key: "pgaiview-admin-2024"
+  
+  # Secret key for license encryption
+  # Leave empty to auto-generate, or set a custom key
+  # Format: Base64 encoded Fernet key
+  # IMPORTANT: This key is used to encrypt/decrypt license keys - DO NOT CHANGE once licenses are generated!
+  secret_key: "Rj70qdtJQw8C-TkL7EIa0soXen-H-VELnL9FXUJ3mu0="
+  
+  # CORS (Cross-Origin Resource Sharing) settings
+  cors:
+    enabled: true
+    # In production, replace "*" with your frontend URL
+    allowed_origins:
+      - "*"
+    # For production, use specific origins:
+    # - "https://yourdomain.com"
+    # - "https://license.yourdomain.com"
+    allow_credentials: true
+    allowed_methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+    allowed_headers:
+      - "*"
+
+# ============================================================================
+# License Configuration
+# ============================================================================
+licenses:
+  # Available license types and their validity periods
+  types:
+    trial:
+      days: 10
+      description: "Trial License - Perfect for testing"
+      
+    standard:
+      days: 60
+      description: "Standard License - 2 months access"
+      
+    enterprise:
+      days: 365
+      description: "Enterprise License - Full year"
+  
+  # License generation settings
+  generation:
+    # Require email for license generation
+    require_email: true
+    
+    # Auto-generate deployment IDs if not provided
+    auto_generate_deployment_id: true
+    
+    # Deployment ID format: deploy-YYYYMMDD-RANDOM
+    deployment_id_prefix: "deploy"
+
+# ============================================================================
+# API Configuration
+# ============================================================================
+api:
+  # API version prefix
+  version_prefix: "/api"
+  
+  # API documentation
+  docs:
+    enabled: true
+    swagger_url: "/api/docs"
+    redoc_url: "/api/redoc"
+    title: "PGAIView License Portal API"
+    description: "REST API for generating, validating, and managing PGAIView licenses"
+    version: "2.0.0"
+  
+  # Rate limiting (requests per minute per IP)
+  rate_limit:
+    enabled: false
+    requests_per_minute: 60
+    
+  # Request timeout (seconds)
+  timeout: 30
+
+# ============================================================================
+# Database Configuration (Optional - for future use)
+# ============================================================================
+database:
+  enabled: false
+  # SQLite for simple deployments
+  type: "sqlite"
+  path: "./licenses.db"
+  
+  # PostgreSQL for production
+  # type: "postgresql"
+  # host: "localhost"
+  # port: 5432
+  # username: "license_user"
+  # password: "secure_password"
+  # database: "license_portal"
+
+# ============================================================================
+# Logging Configuration
+# ============================================================================
+logging:
+  # Log level: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  level: "INFO"
+  
+  # Log file path (leave empty to disable file logging)
+  file: "./logs/license_portal.log"
+  
+  # Log format
+  format: "[%(asctime)s] %(levelname)s - %(message)s"
+  
+  # Log rotation
+  rotation:
+    enabled: true
+    max_size_mb: 10
+    backup_count: 5
+
+# ============================================================================
+# Email Notifications (Optional - for future use)
+# ============================================================================
+email:
+  # Enable email notifications
+  # Set to true and configure SMTP settings below to enable automatic email delivery
+  enabled: true
+  
+  # SMTP Configuration
+  # For Gmail:
+  #   1. Enable 2-factor authentication on your Google Account
+  #   2. Generate App Password at: https://myaccount.google.com/apppasswords
+  #   3. Use the 16-character app password below (not your regular Gmail password)
+  smtp_server: "smtp.gmail.com"
+  smtp_port: 587
+  sender_email: "generativeapp@gmail.com"
+  sender_password: "ttvpngdwxgyifqbg"
+  
+  # For other providers (Outlook, SendGrid, etc.):
+  # smtp_server: "smtp.office365.com"  # Outlook
+  # smtp_server: "smtp.sendgrid.net"   # SendGrid
+  # smtp_port: 587
+  # sender_email: "your-email@example.com"
+  # sender_password: "your-password"
+  
+  # Email templates
+  templates:
+    license_generated:
+      subject: "Your PGAIView License Key"
+      send_to_user: true
+    
+    license_expiring:
+      subject: "Your PGAIView License is Expiring Soon"
+      days_before: 7
+
+# ============================================================================
+# Frontend Configuration
+# ============================================================================
+frontend:
+  # Application title
+  title: "PGAIView License Portal"
+  
+  # Theme
+  theme:
+    mode: "light"  # light or dark
+    primary_color: "#0ea5e9"
+    
+  # Features
+  features:
+    auto_copy_license: true
+    show_deployment_id_generator: true
+    show_license_type_descriptions: true
+    
+  # Default values
+  defaults:
+    license_type: "trial"
+    admin_key_hint: "pgaiview-admin-2024"
+
+# ============================================================================
+# Monitoring & Analytics (Optional - for future use)
+# ============================================================================
+monitoring:
+  enabled: false
+  
+  # Metrics
+  metrics:
+    enabled: false
+    endpoint: "/metrics"
+    
+  # Health check
+  health_check:
+    enabled: true
+    endpoint: "/api/health"
+    
+  # Analytics
+  analytics:
+    track_license_generation: true
+    track_license_validation: true
+    track_license_renewal: true
+
+# ============================================================================
+# Backup & Export (Optional - for future use)
+# ============================================================================
+backup:
+  enabled: false
+  
+  # Backup directory
+  directory: "./backups"
+  
+  # Backup schedule (cron format)
+  schedule: "0 0 * * *"  # Daily at midnight
+  
+  # Retention period (days)
+  retention_days: 30
+  
+  # Export formats
+  export_formats:
+    - "json"
+    - "csv"
+
+# ============================================================================
+# Development Settings
+# ============================================================================
+development:
+  # Enable debug mode (verbose logging, hot reload)
+  debug: true
+  
+  # Show detailed error messages
+  show_errors: true
+  
+  # Mock email sending (don't actually send emails)
+  mock_email: true
+  
+  # Test data
+  test_mode: false
+
+# ============================================================================
+# Production Settings
+# ============================================================================
+production:
+  # Disable debug mode in production
+  debug: false
+  
+  # Hide detailed error messages
+  show_errors: false
+  
+  # Require HTTPS
+  require_https: true
+  
+  # Security headers
+  security_headers:
+    enabled: true
+    
+  # Session configuration
+  session:
+    secret_key: "change-this-in-production"
+    cookie_secure: true
+    cookie_httponly: true
+    cookie_samesite: "lax"
+    max_age: 3600  # 1 hour

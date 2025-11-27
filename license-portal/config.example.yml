@@ -1,0 +1,34 @@
+# Example Production Configuration
+# Copy this file to config.yml and customize for your environment
+
+server:
+  backend:
+    host: "0.0.0.0"
+    port: 8000
+  frontend:
+    host: "0.0.0.0"
+    port: 3000
+
+security:
+  admin_key: "YOUR-SECURE-ADMIN-KEY-HERE"
+  secret_key: ""  # Auto-generate or provide your own
+  cors:
+    allowed_origins:
+      - "https://yourdomain.com"
+      - "https://license.yourdomain.com"
+
+licenses:
+  types:
+    trial:
+      days: 10
+      description: "Trial License"
+    standard:
+      days: 60
+      description: "Standard License"
+    enterprise:
+      days: 365
+      description: "Enterprise License"
+
+production:
+  debug: false
+  require_https: true

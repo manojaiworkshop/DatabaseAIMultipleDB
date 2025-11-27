@@ -1,0 +1,151 @@
+concepts:
+  Order:
+    description: A purchase order or transaction
+    properties:
+      date:
+        column: createdon
+        data_type: timestamp
+        description: Order creation date/time
+        keywords:
+        - date
+        - created
+        - when
+        - time
+        - timestamp
+        required: true
+        semantic_type: temporal
+      id:
+        column: id
+        data_type: integer
+        description: Order identifier
+        keywords:
+        - id
+        - order id
+        - po number
+        - reference
+        required: true
+        semantic_type: identifier
+      status:
+        column: status
+        data_type: text
+        description: Order status
+        keywords:
+        - status
+        - state
+        - condition
+        required: false
+        semantic_type: status
+      total:
+        column: totalinrpo
+        data_type: numeric
+        description: Total order amount in INR
+        keywords:
+        - total
+        - amount
+        - value
+        - price
+        - cost
+        - sum
+        required: true
+        semantic_type: currency
+    synonyms:
+    - purchase
+    - po
+    - purchase order
+    - transaction
+    table: purchase_order
+  Product:
+    description: An item or product being purchased
+    properties:
+      category:
+        column: productcategory
+        data_type: text
+        description: Product category or type
+        keywords:
+        - product category
+        - type
+        - class
+        required: false
+        semantic_type: classification
+      name:
+        column: productname
+        data_type: text
+        description: Product name or identifier
+        keywords:
+        - product
+        - item
+        - name
+        - sku
+        required: false
+        semantic_type: identifier
+    synonyms:
+    - item
+    - goods
+    - merchandise
+    - sku
+    table: purchase_order
+  Vendor:
+    description: A supplier or seller of products/services
+    properties:
+      category:
+        column: vendorcategory
+        data_type: text
+        description: Type or category of vendor
+        keywords:
+        - category
+        - type
+        - class
+        - classification
+        required: false
+        semantic_type: classification
+      location:
+        column: country
+        data_type: text
+        description: Geographical location of vendor
+        keywords:
+        - country
+        - location
+        - region
+        - from
+        - based in
+        required: false
+        semantic_type: geography
+      name:
+        column: vendorgroup
+        data_type: text
+        description: Vendor identifier or name
+        keywords:
+        - vendor
+        - name
+        - supplier name
+        - seller
+        - merchant name
+        required: true
+        semantic_type: identifier
+    synonyms:
+    - supplier
+    - seller
+    - merchant
+    - provider
+    - supplyer
+    table: purchase_order
+metadata:
+  created_by: OntologyBuilder
+  domain: procurement
+  version: '1.0'
+relationships:
+  contains:
+    description: Order includes products
+    from: Order
+    to: Product
+    type: many-to-many
+  purchased_from:
+    description: Order was purchased from vendor
+    from: Order
+    to: Vendor
+    type: many-to-one
+  supplies:
+    description: Vendor provides or sells products
+    from: Vendor
+    to: Product
+    type: one-to-many

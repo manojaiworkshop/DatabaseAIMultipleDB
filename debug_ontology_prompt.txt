@@ -1,0 +1,110 @@
+FULL PROMPT SENT TO LLM:
+================================================================================
+Analyze this ACTUAL database schema and identify the key DOMAIN CONCEPTS based ONLY on what you see in the schema below.
+
+DATABASE SCHEMA SUMMARY:
+Total tables: 5
+
+Table: public.device_status
+  Columns (5):
+    - status_id (integer) [NOT NULL, default=nextval('device_status_status_id_seq'::regclass)]
+    - status_name (character varying) [NOT NULL]
+    - status_description (text)
+    - severity_level (integer)
+    - created_at (timestamp without time zone) [default=CURRENT_TIMESTAMP]
+
+Table: public.hardware_info
+  Columns (9):
+    - hardware_id (integer) [NOT NULL, default=nextval('hardware_info_hardware_id_seq'::regclass)]
+    - hardware_type (character varying) [NOT NULL]
+    - manufacturer (character varying) [NOT NULL]
+    - model_number (character varying) [NOT NULL]
+    - purchase_date (date) [NOT NULL]
+    - warranty_years (integer) [default=3]
+    - unit_price (numeric) [NOT NULL]
+    - supplier (character varying)
+    - created_at (timestamp without time zone) [default=CURRENT_TIMESTAMP]
+
+Table: public.maintenance_logs
+  Columns (12):
+    - log_id (integer) [NOT NULL, default=nextval('maintenance_logs_log_id_seq'::regclass)]
+    - device_id (integer)
+    - maintenance_type (character varying) [NOT NULL]
+    - performed_by (character varying) [NOT NULL]
+    - maintenance_date (date) [NOT NULL]
+    - duration_hours (numeric)
+    - cost (numeric)
+    - description (text)
+    - issues_found (text)
+    - actions_taken (text)
+    - next_maintenance_date (date)
+    - created_at (timestamp without time zone) [default=CURRENT_TIMESTAMP]
+
+Table: public.network_alerts
+  Columns (13):
+    - alert_id (integer) [NOT NULL, default=nextval('network_alerts_alert_id_seq'::regclass)]
+    - device_id (integer)
+    - alert_type (character varying) [NOT NULL]
+    - severity (character varying)
+    - alert_message (text) [NOT NULL]
+    - alert_timestamp (timestamp without time zone) [NOT NULL]
+    - acknowledged (boolean) [default=false]
+    - acknowledged_by (character varying)
+    - acknowledged_at (timestamp without time zone)
+    - resolved (boolean) [default=false]
+    - resolved_at (timestamp without time zone)
+    - resolution_notes (text)
+    - created_at (timestamp without time zone) [default=CURRENT_TIMESTAMP]
+
+Table: public.network_devices
+  Columns (15):
+    - device_id (integer) [NOT NULL, default=nextval('network_devices_device_id_seq'::regclass)]
+    - device_name (character varying) [NOT NULL]
+    - hardware_id (integer)
+    - status_id (integer)
+    - ip_address (character varying) [NOT NULL]
+    - location (character varying) [NOT NULL]
+    - floor_number (integer)
+    - building (character varying)
+    - installation_date (date) [NOT NULL]
+    - last_maintenance_date (date)
+    - uptime_hours (integer) [default=0]
+    - cpu_usage_percent (numeric)
+    - memory_usage_percent (numeric)
+    - bandwidth_usage_mbps (numeric)
+    - created_at (timestamp without time zone) [default=CURRENT_TIMESTAMP]
+
+
+
+CRITICAL INSTRUCTIONS:
+1. Use ONLY the table names and columns shown above - DO NOT invent tables that don't exist
+2. Base concepts DIRECTLY on the actual table names (e.g., if you see "network_devices", create a "NetworkDevice" concept)
+3. DO NOT generate generic e-commerce concepts (Customer, Order, Product) unless those tables actually exist
+4. If tables have technical names, translate them to business concepts (e.g., "tbl_usr" → "User")
+5. **For properties, list the ACTUAL COLUMN NAMES from the schema (e.g., "device_id", "device_name", "ip_address")**
+6. DO NOT create generic property names - use the exact column names shown in the schema
+
+For each concept, provide:
+1. Name - derive from actual table names in the schema
+2. Description - what this table/concept represents in business terms
+3. Related tables - list the ACTUAL table names from the schema (schema.table format if needed)
+4. Key properties - list the ACTUAL COLUMN NAMES (not made-up property names)
+5. Relationships - inferred from foreign keys and table relationships
+
+Return ONLY a valid JSON array (no markdown, no other text):
+[
+  {
+    "name": "ConceptName",
+    "description": "What this represents in business terms",
+    "tables": ["actual_table_1", "actual_table_2"],
+    "properties": ["actual_column_1", "actual_column_2", "actual_column_3"],
+    "relationships": ["has RelatedConcept", "belongs to AnotherConcept"],
+    "confidence": 0.95
+  }
+]
+
+IMPORTANT: 
+- Base your analysis ONLY on the tables listed in the schema above
+- Use ACTUAL column names as they appear in the schema (e.g., "device_id", NOT "DeviceID")
+- Do not hallucinate concepts or column names
+================================================================================

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:ns0="http://purl.org/dc/terms/" xmlns:ns1="http://databaseai.io/ontology/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns="http://databaseai.io/ontology/mydb_192.168.1.2_5432#" xml:base="http://databaseai.io/ontology/mydb_192.168.1.2_5432#">
+  <owl:Ontology rdf:about="">
+    <rdfs:label>DatabaseAI Dynamic Ontology - mydb_192.168.1.2_5432</rdfs:label>
+    <rdfs:comment>Auto-generated ontology for database schema. Generated: 2025-10-30T13:35:28.441090. Tables: 5, Concepts: 5, Properties: 0</rdfs:comment>
+    <ns0:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2025-10-30T13:35:28.441090</ns0:created>
+    <ns0:creator>DatabaseAI Dynamic Ontology Generator</ns0:creator>
+  </owl:Ontology>
+  <owl:Class rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#DeviceStatus">
+    <rdfs:label>DeviceStatus</rdfs:label>
+    <rdfs:comment>The status of a device, including its current condition and severity level.</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.device_status</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1</ns1:confidence>
+  </owl:Class>
+  <owl:Class rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#HardwareInfo">
+    <rdfs:label>HardwareInfo</rdfs:label>
+    <rdfs:comment>Information about the hardware of a device, including its type, manufacturer, model number, and purchase details.</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.hardware_info</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1</ns1:confidence>
+  </owl:Class>
+  <owl:Class rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#MaintenanceLog">
+    <rdfs:label>MaintenanceLog</rdfs:label>
+    <rdfs:comment>Logs of maintenance activities performed on devices, including details about the maintenance type, duration, cost, and issues found.</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.maintenance_logs</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1</ns1:confidence>
+  </owl:Class>
+  <owl:Class rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#NetworkAlert">
+    <rdfs:label>NetworkAlert</rdfs:label>
+    <rdfs:comment>Alerts generated from network devices, including the alert type, severity, message, and acknowledgement details.</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.network_alerts</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1</ns1:confidence>
+  </owl:Class>
+  <owl:Class rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#NetworkDevice">
+    <rdfs:label>NetworkDevice</rdfs:label>
+    <rdfs:comment>Information about the network devices, including hardware details, status, and operational statistics.</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.network_devices</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1</ns1:confidence>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#has_one">
+    <rdfs:label>has_one</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#NetworkDevice"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#HardwareInfo"/>
+    <ns1:viaTables>public.network_devices</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#has_one">
+    <rdfs:label>has_one</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#NetworkDevice"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#DeviceStatus"/>
+    <ns1:viaTables>public.network_devices</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#generates">
+    <rdfs:label>generates</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#NetworkAlert"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#DeviceStatus"/>
+    <ns1:viaTables>public.network_alerts</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#monitors">
+    <rdfs:label>monitors</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#MaintenanceLog"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#DeviceStatus"/>
+    <ns1:viaTables>public.maintenance_logs</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#has_many">
+    <rdfs:label>has_many</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#NetworkDevice"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#MaintenanceLog"/>
+    <ns1:viaTables>public.network_devices</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/mydb_192.168.1.2_5432#belongs_to">
+    <rdfs:label>belongs_to</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#DeviceStatus"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/mydb_192.168.1.2_5432#NetworkDevice"/>
+    <ns1:viaTables>public.device_status</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+</rdf:RDF>

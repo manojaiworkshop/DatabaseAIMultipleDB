@@ -1,0 +1,34 @@
+# Database Configuration Example
+# Copy this file to config.yml and update with your actual database credentials
+
+database:
+  host: localhost          # Database host (e.g., localhost, 192.168.1.100)
+  port: 5432              # PostgreSQL port (default: 5432)
+  database: your_database_name  # Name of your database
+  user: postgres          # Database username
+  password: your_password # Database password
+
+# Docker Configuration (if using PostgreSQL in Docker)
+docker:
+  enabled: false  # Set to true if PostgreSQL is running in Docker
+  container_name: postgres  # Name or ID of your PostgreSQL Docker container
+  # Alternative: use container_id instead of container_name
+  # container_id: abc123def456
+
+# File paths
+paths:
+  import_file: public_backup.sql        # SQL file to import
+  export_file: database_export.sql      # Default export filename
+
+# Options
+options:
+  # Backup options
+  backup_format: plain  # plain (SQL text), custom (pg_dump custom), directory, tar
+  
+  # Import options
+  drop_existing: false  # Drop existing database before import (DANGEROUS!)
+  create_database: false  # Create database if it doesn't exist
+  
+  # Logging
+  log_file: database_operations.log  # Log file path
+  log_level: INFO  # DEBUG, INFO, WARNING, ERROR, CRITICAL

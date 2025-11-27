@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:ns0="http://purl.org/dc/terms/" xmlns:ns1="http://databaseai.io/ontology/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns="http://databaseai.io/ontology/testing_10.198.231.246_5432#" xml:base="http://databaseai.io/ontology/testing_10.198.231.246_5432#">
+  <owl:Ontology rdf:about="">
+    <rdfs:label>DatabaseAI Dynamic Ontology - testing_10.198.231.246_5432</rdfs:label>
+    <rdfs:comment>Auto-generated ontology for database schema. Generated: 2025-11-12T08:13:05.752202. Tables: 5, Concepts: 5, Properties: 0</rdfs:comment>
+    <ns0:created rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2025-11-12T08:13:05.752202</ns0:created>
+    <ns0:creator>DatabaseAI Dynamic Ontology Generator</ns0:creator>
+  </owl:Ontology>
+  <owl:Class rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#NetworkDevice">
+    <rdfs:label>NetworkDevice</rdfs:label>
+    <rdfs:comment>A device connected to a network</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.network_devices</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">0.95</ns1:confidence>
+  </owl:Class>
+  <owl:Class rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#Hardware">
+    <rdfs:label>Hardware</rdfs:label>
+    <rdfs:comment>A piece of hardware used in a device</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.hardware_info</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">0.95</ns1:confidence>
+  </owl:Class>
+  <owl:Class rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#DeviceStatus">
+    <rdfs:label>DeviceStatus</rdfs:label>
+    <rdfs:comment>The current status of a device</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.device_status</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">0.95</ns1:confidence>
+  </owl:Class>
+  <owl:Class rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#MaintenanceLog">
+    <rdfs:label>MaintenanceLog</rdfs:label>
+    <rdfs:comment>A record of maintenance performed on a device</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.maintenance_logs</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">0.95</ns1:confidence>
+  </owl:Class>
+  <owl:Class rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#NetworkAlert">
+    <rdfs:label>NetworkAlert</rdfs:label>
+    <rdfs:comment>A notification of an issue with a device</rdfs:comment>
+    <rdfs:seeAlso>Database tables: public.network_alerts</rdfs:seeAlso>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">0.95</ns1:confidence>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#has_many">
+    <rdfs:label>has_many</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/testing_10.198.231.246_5432#NetworkDevice"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/testing_10.198.231.246_5432#Hardware"/>
+    <ns1:viaTables>public.hardware_info</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#has_one">
+    <rdfs:label>has_one</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/testing_10.198.231.246_5432#NetworkDevice"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/testing_10.198.231.246_5432#DeviceStatus"/>
+    <ns1:viaTables>public.device_status</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#has_many">
+    <rdfs:label>has_many</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/testing_10.198.231.246_5432#NetworkDevice"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/testing_10.198.231.246_5432#MaintenanceLog"/>
+    <ns1:viaTables>public.maintenance_logs</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://databaseai.io/ontology/testing_10.198.231.246_5432#generates">
+    <rdfs:label>generates</rdfs:label>
+    <rdfs:domain rdf:resource="http://databaseai.io/ontology/testing_10.198.231.246_5432#NetworkDevice"/>
+    <rdfs:range rdf:resource="http://databaseai.io/ontology/testing_10.198.231.246_5432#NetworkAlert"/>
+    <ns1:viaTables>public.network_alerts</ns1:viaTables>
+    <ns1:confidence rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1.0</ns1:confidence>
+  </owl:ObjectProperty>
+</rdf:RDF>

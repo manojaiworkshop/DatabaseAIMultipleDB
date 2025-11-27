@@ -1,0 +1,30 @@
+ontology:
+  concepts:
+    Public:
+      confidence: 0.6
+      description: Represents public data
+      properties:
+      - id
+      - name
+      relationships: []
+      tables:
+      - public
+  metadata:
+    concept_count: 1
+    connection_id: sap_data_10.35.118.246_5432
+    generated_at: '2025-10-30T04:25:41.321257'
+    property_count: 0
+    relationship_count: 1
+    table_count: 1
+  relationships:
+  - confidence: 1.0
+    from: Public
+    to: Public
+    type: has
+    via_tables:
+    - public
+  rules:
+  - column: id
+    description: purchase_order.id is required
+    table: purchase_order
+    type: required_field

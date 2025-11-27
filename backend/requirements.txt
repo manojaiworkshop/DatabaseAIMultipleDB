@@ -1,0 +1,21 @@
+fastapi==0.104.1
+uvicorn==0.24.0
+pydantic==2.5.0
+psycopg2-binary==2.9.9
+PyYAML==6.0.1
+python-dotenv==1.0.0
+openai>=1.3.0
+requests==2.31.0
+python-multipart==0.0.6
+langgraph==0.0.26
+langchain>=0.1.0,<0.2.0
+langchain-core>=0.1.25,<0.2.0
+
+# Neo4j Knowledge Graph Support
+neo4j==5.14.1
+networkx==3.2.1
+
+# Multi-Database Support
+cx-Oracle==8.3.0
+mysql-connector-python==8.2.0
+# Note: sqlite3 is built into Python

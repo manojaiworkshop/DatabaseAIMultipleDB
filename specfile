@@ -1,0 +1,257 @@
+# -*- mode: python ; coding: utf-8 -*-
+"""
+PyInstaller spec file for DatabaseAI Backend
+Builds a standalone executable with all dependencies
+"""
+
+import sys
+from PyInstaller.utils.hooks import collect_all, collect_submodules
+
+block_cipher = None
+
+# Collect all submodules for key packages
+fastapi_imports = collect_submodules('fastapi')
+uvicorn_imports = collect_submodules('uvicorn')
+pydantic_imports = collect_submodules('pydantic')
+openai_imports = collect_submodules('openai')
+langchain_imports = collect_submodules('langchain')
+langchain_core_imports = collect_submodules('langchain_core')
+langgraph_imports = collect_submodules('langgraph')
+neo4j_imports = collect_submodules('neo4j')
+networkx_imports = collect_submodules('networkx')
+
+# Hidden imports - all required modules
+hiddenimports = [
+    # FastAPI and web framework
+    'fastapi',
+    'fastapi.middleware',
+    'fastapi.middleware.cors',
+    'fastapi.responses',
+    'fastapi.staticfiles',
+    'uvicorn',
+    'uvicorn.loops',
+    'uvicorn.loops.auto',
+    'uvicorn.protocols',
+    'uvicorn.protocols.http',
+    'uvicorn.protocols.http.auto',
+    'uvicorn.protocols.websockets',
+    'uvicorn.protocols.websockets.auto',
+    'uvicorn.lifespan',
+    'uvicorn.lifespan.on',
+    
+    # Pydantic
+    'pydantic',
+    'pydantic.fields',
+    'pydantic.main',
+    'pydantic.types',
+    'pydantic.validators',
+    'pydantic.error_wrappers',
+    'pydantic_core',
+    
+    # Starlette (FastAPI dependency)
+    'starlette',
+    'starlette.applications',
+    'starlette.middleware',
+    'starlette.middleware.cors',
+    'starlette.routing',
+    'starlette.responses',
+    'starlette.requests',
+    
+    # Database
+    'psycopg2',
+    'psycopg2._psycopg',
+    'psycopg2.pool',
+    'psycopg2.extensions',
+    'psycopg2.extras',
+    
+    # YAML and config
+    'yaml',
+    'PyYAML',
+    
+    # OpenAI
+    'openai',
+    'openai.error',
+    'openai.api_resources',
+    
+    # HTTP requests
+    'requests',
+    'requests.adapters',
+    'requests.auth',
+    'requests.models',
+    'urllib3',
+    
+    # Python standard libraries
+    'logging',
+    'logging.handlers',
+    'json',
+    'os',
+    'sys',
+    'pathlib',
+    'typing',
+    'datetime',
+    'time',
+    'uuid',
+    'hashlib',
+    'threading',
+    'queue',
+    'collections',
+    're',
+    'difflib',
+    
+    # LangChain and related
+    'langchain',
+    'langchain.llms',
+    'langchain.prompts',
+    'langchain.chains',
+    'langchain.agents',
+    'langchain_core',
+    'langchain_core.prompts',
+    'langchain_core.output_parsers',
+    'langchain_core.messages',
+    'langgraph',
+    
+    # Neo4j Knowledge Graph
+    'neo4j',
+    'neo4j.exceptions',
+    'neo4j.work',
+    'neo4j.io',
+    'neo4j._codec',
+    'neo4j._async',
+    'neo4j._sync',
+    'networkx',
+    'networkx.algorithms',
+    'networkx.algorithms.shortest_paths',
+    
+    # Multipart form data
+    'python_multipart',
+    'multipart',
+    
+    # Dotenv
+    'dotenv',
+    
+    # Email validator (pydantic dependency)
+    'email_validator',
+    
+    # Anyio (async support)
+    'anyio',
+    'anyio._backends',
+    'anyio._backends._asyncio',
+    
+    # Sniffio (async detection)
+    'sniffio',
+    
+    # Httpx (HTTP client)
+    'httpx',
+    'httpx._client',
+    'httpx._config',
+    'httpx._models',
+    
+    # H11 (HTTP/1.1 protocol)
+    'h11',
+    'h11._connection',
+    'h11._events',
+    'h11._state',
+    
+    # Click (CLI framework - uvicorn uses it)
+    'click',
+    'click.core',
+    'click.decorators',
+    
+    # Typing extensions
+    'typing_extensions',
+    
+    # Application modules
+    'backend',
+    'backend.app',
+    'backend.app.main',
+    'backend.app.routes',
+    'backend.app.routes.api',
+    'backend.app.routes.license',
+    'backend.app.routes.settings',
+    'backend.app.services',
+    'backend.app.services.llm',
+    'backend.app.services.sql_agent',
+    'backend.app.services.database',
+    'backend.app.services.database_pooled',
+    'backend.app.services.connection_pool',
+    'backend.app.services.context_manager',
+    'backend.app.services.session_manager',
+    'backend.app.models',
+    'backend.app.models.schemas',
+    'backend.app.models.license',
+    'backend.app.models.settings',
+    'backend.app.middleware',
+] + fastapi_imports + uvicorn_imports + pydantic_imports + openai_imports + langchain_imports + langchain_core_imports + langgraph_imports + neo4j_imports + networkx_imports
+
+# Collect data files
+datas = [
+    ('app_config.yml', '.'),
+    ('backend/app', 'backend/app'),
+]
+
+# Analysis
+a = Analysis(
+    ['run_backend.py'],
+    pathex=[],
+    binaries=[],
+    datas=datas,
+    hiddenimports=hiddenimports,
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=[
+        'matplotlib',
+        'numpy',
+        'pandas',
+        'scipy',
+        'PIL',
+        'tkinter',
+        'PyQt5',
+        'PyQt6',
+        'PySide2',
+        'PySide6',
+        'wx',
+    ],
+    win_no_prefer_redirects=False,
+    win_private_assemblies=False,
+    cipher=block_cipher,
+    noarchive=False,
+)
+
+# Remove duplicate entries
+pyz = PYZ(
+    a.pure,
+    a.zipped_data,
+    cipher=block_cipher
+)
+
+# Build executable
+exe = EXE(
+    pyz,
+    a.scripts,
+    [],
+    exclude_binaries=True,
+    name='pgaiview-backend',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=False,
+    upx=True,
+    console=True,
+    disable_windowed_traceback=False,
+    argv_emulation=False,
+    target_arch=None,
+    codesign_identity=None,
+    entitlements_file=None,
+)
+
+# Collect everything into a directory
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='pgaiview-backend',
+)

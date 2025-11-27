@@ -1,0 +1,18 @@
+docker build -f Dockerfile.combined -t opendockerai/pgaiview:1.0.0 -t opendockerai/pgaiview:latest .
+
+docker run -d --name pgaiview -p 80:80 opendockerai/pgaiview:latest
+
+
+
+ docker stop pgaiview 2>/dev/null; docker rm pgaiview 2>/dev/null; docker run -d --name pgaiview -p 80:80 opendockerai/pgaiview:latest
+
+
+
+ docker stop pgaiview && docker rm pgaiview && docker run -d --name pgaiview --network=host opendockerai/pgaiview:latest
+
+
+ docker logs pgaiview --tail 100 -f
+
+
+ docker stop pgaiview 2>/dev/null; docker rm pgaiview 2>/dev/null; \
+docker run -d --name pgaiview -p 9988:80 opendockerai/pgaiview-license:2.0.0

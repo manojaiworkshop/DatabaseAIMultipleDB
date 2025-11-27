@@ -1,0 +1,29 @@
+{
+  "licenseServer": {
+    "url": "http://localhost:5000",
+    "defaultAdminKey": "pgaiview-admin-2024"
+  },
+  "webPortal": {
+    "port": 8080,
+    "title": "PGAIView License Portal"
+  },
+  "licenseTypes": {
+    "trial": {
+      "days": 10,
+      "description": "Trial License - Perfect for testing"
+    },
+    "standard": {
+      "days": 60,
+      "description": "Standard License - 2 months access"
+    },
+    "enterprise": {
+      "days": 365,
+      "description": "Enterprise License - Full year"
+    }
+  },
+  "branding": {
+    "companyName": "PGAIView",
+    "supportEmail": "support@pgaiview.com",
+    "documentationUrl": "https://docs.pgaiview.com"
+  }
+}

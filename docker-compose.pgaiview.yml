@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Combined PGAIView Service (Backend + Frontend)
+  pgaiview:
+    build:
+      context: .
+      dockerfile: Dockerfile.combined
+    container_name: pgaiview
+    image: ${DOCKER_USERNAME:-opendockerai}/pgaiview:${VERSION:-latest}
+    ports:
+      - "80:80"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./app_config.yml:/app/app_config.yml:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    restart: unless-stopped
+    networks:
+      - pgaiview-network
+
+networks:
+  pgaiview-network:
+    driver: bridge
+
+volumes: {}

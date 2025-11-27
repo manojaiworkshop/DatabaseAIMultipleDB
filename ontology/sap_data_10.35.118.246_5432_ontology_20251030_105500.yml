@@ -1,0 +1,43 @@
+ontology:
+  concepts:
+    PurchaseOrder:
+      confidence: 0.95
+      description: A purchase order represents a request to purchase goods or services
+        from a vendor.
+      properties:
+      - id
+      - created_at
+      - updated_at
+      - vendorid
+      - vendorname
+      - netvalue
+      - netvaluewithtax
+      - country
+      - currency
+      - postingdate
+      - paymentterms
+      - clausedescription
+      relationships:
+      - related to Vendor
+      - has related PurchaseOrder items
+      tables:
+      - public.purchase_order
+  metadata:
+    concept_count: 1
+    connection_id: sap_data_10.35.118.246_5432
+    generated_at: '2025-10-30T05:25:00.500821'
+    property_count: 0
+    relationship_count: 1
+    table_count: 1
+  relationships:
+  - confidence: 1.0
+    from: PurchaseOrder
+    to: PurchaseOrder
+    type: has
+    via_tables:
+    - public.purchase_order
+  rules:
+  - column: id
+    description: purchase_order.id is required
+    table: purchase_order
+    type: required_field
