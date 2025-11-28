@@ -232,6 +232,48 @@ export const api = {
     });
     return response;
   },
+
+  // RAG endpoints
+  getRagStatus: async () => {
+    const response = await apiClient.get('/rag/status');
+    return response;
+  },
+
+  getRagStatistics: async () => {
+    const response = await apiClient.get('/rag/statistics');
+    return response;
+  },
+
+  addQueryToRag: async (queryData) => {
+    const response = await apiClient.post('/rag/add-query', queryData);
+    return response;
+  },
+
+  searchSimilarQueries: async (searchData) => {
+    const response = await apiClient.post('/rag/search-similar', searchData);
+    return response;
+  },
+
+  uploadRagCsv: async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await apiClient.post('/rag/upload-csv', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response;
+  },
+
+  bulkImportRagQueries: async (queries) => {
+    const response = await apiClient.post('/rag/bulk-import', { queries });
+    return response;
+  },
+
+  clearRagDatabase: async () => {
+    const response = await apiClient.delete('/rag/clear-all');
+    return response;
+  },
 };
 
 // Export individual functions for easier imports

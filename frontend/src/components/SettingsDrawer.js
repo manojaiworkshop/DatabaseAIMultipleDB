@@ -3,6 +3,7 @@ import api from '../services/api';
 import Neo4jSettings from './Neo4jSettings';
 import OntologySettings from './OntologySettings';
 import LicenseSettings from './LicenseSettings';
+import RAGSettings from './RAGSettings';
 
 export default function SettingsDrawer({ open, onClose }) {
   const [activeTab, setActiveTab] = useState('general');
@@ -246,21 +247,24 @@ export default function SettingsDrawer({ open, onClose }) {
 
         {/* Tabs */}
                 {/* Tabs */}
-        <div className="flex border-b border-gray-200 bg-gray-50 px-6">
-          {['general', 'openai', 'vllm', 'ollama', 'neo4j', 'ontology', 'license'].map((tab) => (
+        <div className="flex border-b border-gray-200 bg-gray-50 px-6 overflow-x-auto">
+          {['general', 'openai', 'vllm', 'ollama', 'neo4j', 'ontology', 'rag', 'license'].map((tab) => (
             <button
               key={tab}
               onClick={() => {
                 setActiveTab(tab);
                 setMessage({ type: '', text: '' });
               }}
-              className={`px-6 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+              className={`px-6 py-3 text-sm font-medium transition-all duration-200 border-b-2 whitespace-nowrap ${
                 activeTab === tab
                   ? 'text-blue-600 border-blue-600 bg-white'
                   : 'text-gray-600 border-transparent hover:text-gray-800 hover:border-gray-300'
               }`}
             >
-              {tab === 'neo4j' ? 'Neo4j' : tab === 'ontology' ? 'Ontology' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {tab === 'neo4j' ? 'Neo4j' : 
+               tab === 'ontology' ? 'Ontology' :
+               tab === 'rag' ? 'RAG' :
+               tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
           ))}
         </div>
@@ -635,6 +639,11 @@ export default function SettingsDrawer({ open, onClose }) {
           {/* Ontology Tab */}
           {activeTab === 'ontology' && (
             <OntologySettings />
+          )}
+
+          {/* RAG Tab */}
+          {activeTab === 'rag' && (
+            <RAGSettings onClose={onClose} />
           )}
 
           {/* License Tab */}

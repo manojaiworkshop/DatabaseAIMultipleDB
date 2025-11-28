@@ -396,6 +396,60 @@ class SQLAgent:
         
         logger.info("="*80)
         
+        # 📚 STEP 3: RAG - Similar Past Queries
+        logger.info("\n" + "="*80)
+        logger.info("📚 TRACE STEP 3: RAG SIMILAR QUERIES")
+        logger.info("="*80)
+        
+        rag_context = ""
+        if self.config.get('rag', {}).get('enabled', False) and self.config.get('rag', {}).get('include_in_context', True):
+            try:
+                logger.info("✅ RAG is ENABLED")
+                from .rag_service import get_rag_service
+                rag_service = get_rag_service(self.config)
+                
+                if rag_service and rag_service.enabled:
+                    logger.info(f"🔍 Searching for similar queries: '{state['question']}'")
+                    
+                    # Get database type for filtering
+                    db_type = self.db_service.get_database_type() if hasattr(self.db_service, 'get_database_type') else None
+                    schema_name = state.get('schema_name')
+                    
+                    logger.info(f"   Filters - DB Type: {db_type}, Schema: {schema_name}")
+                    
+                    # Get RAG context
+                    rag_context = rag_service.get_rag_context(
+                        user_query=state['question'],
+                        database_type=db_type,
+                        schema_name=schema_name
+                    )
+                    
+                    if rag_context:
+                        # Count similar queries
+                        similar_count = rag_context.count("Example ")
+                        logger.info(f"✅ Found {similar_count} similar past queries")
+                        logger.info(f"📚 RAG context generated ({len(rag_context)} chars)")
+                        
+                        # Log first example for verification
+                        if "Example 1" in rag_context:
+                            first_example_end = rag_context.find("Example 2") if "Example 2" in rag_context else len(rag_context)
+                            first_example = rag_context[rag_context.find("Example 1"):first_example_end].strip()
+                            logger.info(f"📋 First similar query preview:\n{first_example[:200]}...")
+                    else:
+                        logger.info("⚠️  No similar queries found in RAG database")
+                else:
+                    logger.warning("⚠️  RAG service not available")
+            except Exception as e:
+                logger.error(f"📚 RAG ERROR: {e}", exc_info=True)
+                rag_context = ""
+        else:
+            if not self.config.get('rag', {}).get('enabled', False):
+                logger.info("⚠️  RAG is DISABLED in config")
+            elif not self.config.get('rag', {}).get('include_in_context', True):
+                logger.info("⚠️  RAG include_in_context is FALSE")
+        
+        logger.info("="*80)
+        
         # Use ContextManager to build optimized prompt
         system_prompt = self.context_manager.build_system_prompt()
         
@@ -438,6 +492,7 @@ class SQLAgent:
 {schema_for_llm}
 {ontology_context}
 {graph_insights_text}
+{rag_context}
 
 Generate the CORRECTED SQL query:"""
         else:
@@ -461,6 +516,7 @@ Generate the CORRECTED SQL query:"""
 {schema_for_llm}
 {ontology_context}
 {graph_insights_text}
+{rag_context}
 {column_hints}
 
 Generate the SQL query:"""
@@ -752,6 +808,32 @@ Generate the SQL query:"""
             state['error_message'] = None
             
             logger.info(f"Query executed successfully: {len(results)} rows in {execution_time:.3f}s")
+            
+            # Store successful query in RAG database
+            if self.config.get('rag', {}).get('enabled', False):
+                try:
+                    from .rag_service import get_rag_service
+                    rag_service = get_rag_service(self.config)
+                    
+                    if rag_service and rag_service.enabled:
+                        db_type = self.db_service.get_database_type() if hasattr(self.db_service, 'get_database_type') else None
+                        schema_name = state.get('schema_name')
+                        
+                        rag_service.add_query(
+                            user_query=state['question'],
+                            sql_query=state['sql_query'],
+                            database_type=db_type or 'postgresql',
+                            schema_name=schema_name,
+                            success=True,
+                            metadata={
+                                'execution_time': execution_time,
+                                'row_count': len(results),
+                                'retry_count': state['current_retry']
+                            }
+                        )
+                        logger.info("✅ Successful query stored in RAG database")
+                except Exception as e:
+                    logger.warning(f"Failed to store query in RAG: {e}")
             
         except Exception as e:
             error_str = str(e)

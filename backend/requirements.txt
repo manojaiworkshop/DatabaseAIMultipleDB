@@ -19,3 +19,8 @@ networkx==3.2.1
 cx-Oracle==8.3.0
 mysql-connector-python==8.2.0
 # Note: sqlite3 is built into Python
+
+# RAG with Qdrant Vector Database
+qdrant-client==1.7.0
+sentence-transformers==2.2.2
+pandas==2.1.4

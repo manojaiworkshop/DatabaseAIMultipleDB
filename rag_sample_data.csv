@@ -1,0 +1,11 @@
+user_query,sql_query,database_type,schema_name,success
+"Show all users","SELECT * FROM users LIMIT 100","postgresql","public",true
+"How many customers do we have?","SELECT COUNT(*) as customer_count FROM customers","postgresql","public",true
+"List all products with price greater than 100","SELECT * FROM products WHERE price > 100","postgresql","public",true
+"Show vendor names and codes","SELECT vendorgroup, vendorcode FROM vendors","oracle","nmsclient",true
+"Get total sales by customer","SELECT customer_id, SUM(amount) as total_sales FROM orders GROUP BY customer_id","postgresql","public",true
+"Find users created in 2024","SELECT * FROM users WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'","postgresql","public",true
+"Show top 10 products by sales","SELECT p.name, SUM(oi.quantity * oi.price) as total_sales FROM products p JOIN order_items oi ON p.id = oi.product_id GROUP BY p.id, p.name ORDER BY total_sales DESC LIMIT 10","postgresql","public",true
+"List active users","SELECT * FROM users WHERE status = 'active'","postgresql","public",true
+"Get average order value","SELECT AVG(total_amount) as avg_order_value FROM orders","postgresql","public",true
+"Show recent orders","SELECT * FROM orders ORDER BY created_at DESC LIMIT 50","postgresql","public",true

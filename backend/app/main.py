@@ -72,6 +72,15 @@ async def startup_event():
         logger.info("License validator started with existing license")
     else:
         logger.info("License validator started (no license key found)")
+    
+    # Initialize RAG service
+    logger.info("Initializing RAG service...")
+    from .services.rag_service import get_rag_service
+    rag_service = get_rag_service(config)
+    if rag_service and rag_service.enabled:
+        logger.info("RAG service initialized successfully")
+    else:
+        logger.info("RAG service is disabled")
 
 @app.on_event("shutdown")
 async def shutdown_event():
@@ -79,7 +88,18 @@ async def shutdown_event():
     logger.info("Stopping license validator...")
     from .services.license_validator import stop_license_validator
     stop_license_validator()
+    
+    # Close RAG service connection
+    logger.info("Closing RAG service...")
+    from .services.rag_service import get_rag_service
+    rag_service = get_rag_service(config)
+    if rag_service:
+        rag_service.close()
+    
     logger.info("Application shutdown complete")
+
+# Store config in app state for access in routes
+app.state.config = config
 
 # Include routers
 app.include_router(router, prefix="/api/v1", tags=["api"])
@@ -93,6 +113,14 @@ try:
     logger.info("Ontology router loaded")
 except Exception as e:
     logger.warning(f"Ontology router not available: {e}")
+
+# Import and include RAG router
+try:
+    from .routes.rag import router as rag_router
+    app.include_router(rag_router, prefix="/api/v1", tags=["rag"])
+    logger.info("RAG router loaded")
+except Exception as e:
+    logger.warning(f"RAG router not available: {e}")
 
 @app.get("/")
 async def root():

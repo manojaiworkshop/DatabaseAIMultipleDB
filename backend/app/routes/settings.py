@@ -62,7 +62,8 @@ async def get_all_settings():
                 "openai": config.get("openai", {}),
                 "vllm": config.get("vllm", {}),
                 "ollama": config.get("ollama", {}),
-                "neo4j": config.get("neo4j", {})
+                "neo4j": config.get("neo4j", {}),
+                "rag": config.get("rag", {})
             }
         }
     except Exception as e:
@@ -85,7 +86,7 @@ async def get_section_settings(section: str):
                     "schema_cache_ttl": config.get("cache", {}).get("schema_cache_ttl", 3600)
                 }
             }
-        elif section in ["llm", "openai", "vllm", "ollama", "neo4j"]:
+        elif section in ["llm", "openai", "vllm", "ollama", "neo4j", "rag"]:
             return {
                 "success": True,
                 "settings": config.get(section, {})
@@ -140,7 +141,7 @@ async def update_settings(request: SettingsUpdateRequest):
                 config["llm"]["provider"] = settings["llm_provider"]
                 llm_settings_updated = True
                 
-        elif section in ["llm", "openai", "vllm", "ollama", "neo4j"]:
+        elif section in ["llm", "openai", "vllm", "ollama", "neo4j", "rag"]:
             # Update LLM provider settings
             if section not in config:
                 config[section] = {}
@@ -152,11 +153,24 @@ async def update_settings(request: SettingsUpdateRequest):
             elif section == "neo4j":
                 # Neo4j settings changed - will reload SQLAgent after saving config below
                 pass
+            elif section == "rag":
+                # RAG settings changed - will reload RAG service after saving config below
+                pass
         else:
             raise HTTPException(status_code=400, detail=f"Unknown section: {section}")
         
         # Save updated configuration
         save_config(config)
+        
+        # 🔄 Reload RAG service if RAG settings were changed
+        if section == "rag":
+            try:
+                from ..services.rag_service import reload_rag_service
+                updated_config = load_config()
+                reload_rag_service(updated_config)
+                logger.info(f"✅ RAG service reloaded - RAG is now {'ENABLED' if settings.get('enabled', False) else 'DISABLED'}")
+            except Exception as e:
+                logger.error(f"Failed to reload RAG service: {e}", exc_info=True)
         
         # 🔄 Reload SQLAgent if Neo4j settings were changed
         if section == "neo4j":
