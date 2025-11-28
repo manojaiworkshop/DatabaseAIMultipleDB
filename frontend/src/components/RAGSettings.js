@@ -29,9 +29,11 @@ const RAGSettings = ({ onClose }) => {
 
   const loadRAGSettings = async () => {
     try {
-      const response = await api.getSettings('rag');
-      if (response.data.success) {
-        setRagConfig(response.data.settings);
+      // Use getSettings() to get ALL settings, same as Neo4j
+      const response = await api.getSettings();
+      if (response.success && response.settings && response.settings.rag) {
+        // Replace entire config with loaded settings from config file
+        setRagConfig({ ...ragConfig, ...response.settings.rag });
       }
     } catch (error) {
       console.error('Failed to load RAG settings:', error);

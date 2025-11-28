@@ -25,22 +25,27 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/settings", tags=["settings"])
 
-CONFIG_FILE = "app_config.yml"
+# Try /usr/dataconfig first (container), fallback to current directory
+CONFIG_FILE = "/usr/dataconfig/app_config.yml" if os.path.exists("/usr/dataconfig/app_config.yml") else "app_config.yml"
 
 
 def load_config() -> Dict[str, Any]:
     """Load configuration from YAML file"""
-    if not os.path.exists(CONFIG_FILE):
-        raise HTTPException(status_code=404, detail="Configuration file not found")
+    config_path = CONFIG_FILE
+    if not os.path.exists(config_path):
+        raise HTTPException(status_code=404, detail=f"Configuration file not found at {config_path}")
     
-    with open(CONFIG_FILE, 'r') as f:
+    logger.info(f"Loading config from: {config_path}")
+    with open(config_path, 'r') as f:
         return yaml.safe_load(f)
 
 
 def save_config(config: Dict[str, Any]):
     """Save configuration to YAML file"""
+    logger.info(f"Saving config to: {CONFIG_FILE}")
     with open(CONFIG_FILE, 'w') as f:
         yaml.dump(config, f, default_flow_style=False, sort_keys=False)
+    logger.info("✅ Configuration saved successfully")
 
 
 @router.get("/all")

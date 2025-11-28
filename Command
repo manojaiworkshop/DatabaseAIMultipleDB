@@ -19,3 +19,10 @@ docker run -d --name pgaiview -p 9988:80 opendockerai/pgaiview-license:2.0.0
 
 
 docker exec databaseai-oracle cat /var/log/backend.err.log
+
+docker compose -f docker-compose.oracle.yml restart databaseai
+
+
+docker exec databaseai-oracle pip install --upgrade 'qdrant-client>=1.8.0'
+
+docker compose -f docker-compose.oracle.yml restart databaseai

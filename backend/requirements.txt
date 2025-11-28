@@ -21,7 +21,7 @@ mysql-connector-python==8.2.0
 # Note: sqlite3 is built into Python
 
 # RAG with Qdrant Vector Database
-qdrant-client==1.7.0
+qdrant-client>=1.8.0  # Latest version to match server API
 # CPU-only PyTorch with compatible versions
 torch==2.1.2
 transformers==4.36.0
