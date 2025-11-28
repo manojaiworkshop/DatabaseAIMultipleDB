@@ -28,15 +28,15 @@ license:
   server_url: http://localhost:9999
 llm:
   fallback_to_rules: true
-  provider: vllm
+  provider: openai  # Changed to openai since you're using it
 neo4j:
-  auto_sync: true
+  auto_sync: false  # Disabled - start Neo4j separately if needed
   database: neo4j
-  enabled: true
-  include_in_context: true
+  enabled: false  # Set to false to skip connection attempts
+  include_in_context: false
   max_relationship_depth: 2
   password: neo4jpassword
-  uri: bolt://10.198.231.246:7687
+  uri: bolt://localhost:7687  # Use localhost when you enable Neo4j
   username: neo4j
 ollama:
   api_url: http://localhost:11434/api/chat
@@ -67,13 +67,13 @@ openai:
   temperature: 1.0
   top_p: 1.0
 rag:
-  enabled: false
+  enabled: false  # RAG disabled for CPU-only deployment
   qdrant_url: http://localhost:6333
   collection_name: query_history
   embedding_model: all-MiniLM-L6-v2
   top_k: 3
   similarity_threshold: 0.7
-  include_in_context: true
+  include_in_context: false  # Don't include in context when disabled
 server:
   host: 0.0.0.0
   port: 8088

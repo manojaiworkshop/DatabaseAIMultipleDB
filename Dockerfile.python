@@ -66,6 +66,9 @@ RUN mkdir -p /usr/dataconfig
 
 # Copy backend requirements and install
 COPY backend/requirements.txt .
+# Install CPU-only PyTorch first to avoid GPU dependencies
+RUN pip install --no-cache-dir torch==2.1.2 --index-url https://download.pytorch.org/whl/cpu
+# Then install remaining requirements (transformers and sentence-transformers)
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend source code

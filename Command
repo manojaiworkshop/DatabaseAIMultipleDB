@@ -4,7 +4,7 @@ docker run -d --name pgaiview -p 80:80 opendockerai/pgaiview:latest
 
 
 
- docker stop pgaiview 2>/dev/null; docker rm pgaiview 2>/dev/null; docker run -d --name pgaiview -p 80:80 opendockerai/pgaiview:latest
+ docker stop pgaiviewlicense 2>/dev/null; docker rm pgaiviewlicense 2>/dev/null; docker run -d --name pgaiviewlicense -p 80:80 opendockerai/pgaiviewlicense:latest
 
 
 
@@ -16,3 +16,6 @@ docker run -d --name pgaiview -p 80:80 opendockerai/pgaiview:latest
 
  docker stop pgaiview 2>/dev/null; docker rm pgaiview 2>/dev/null; \
 docker run -d --name pgaiview -p 9988:80 opendockerai/pgaiview-license:2.0.0
+
+
+docker exec databaseai-oracle cat /var/log/backend.err.log
