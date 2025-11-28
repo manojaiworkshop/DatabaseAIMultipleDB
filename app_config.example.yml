@@ -1,0 +1,78 @@
+cache:
+  query_history_limit: 100
+  schema_cache_ttl: 3600
+chat:
+  enable_cache: false
+  max_tokens: 512
+  temperature: 0.7
+  top_p: 1.0
+cors:
+  allow_credentials: true
+  allow_headers:
+  - '*'
+  allow_methods:
+  - '*'
+  allow_origins:
+  - '*'
+general:
+  context_strategy: auto
+  max_retry_attempts: 6
+  max_tokens: 4000
+  schema_name: null
+license:
+  activated_at: '2025-11-12T08:18:52.573366'
+  deployment_id: deploy-20251112-K33J0GMX
+  expiry_date: '2025-11-22T08:18:44.272748'
+  key: Z0FBQUFBQnBGRUxrbUtsZ3Y2LWozbjFycnd4ejdfUHgxd2RIbjFWcEd6OVRlS093TlVxcTM4NDJLOG9RQklTWC1lS2lsdlIzbzY2aWN5REo0ZFBtRmtGcm9KUjd4SHk4RjBiT2YxbklGRnJrbTlrUzVhRjc5WHFHRHQ4clluVVRkX0l5eWl1YXJvaFVhWHhvMGFpYXhPa3VjR2F0VWtUcWNucnA5NmpYN0c4Y01LMHRmR3Z5SUNCUHZGOXROdElBM3NXbUFmQ2ZnUTlDSVQ5M1lnb01fa1VpdVNKeGl5SnJPQVdTWGtCdjd3d296SUNZUGdaa1V4SHFxR1o1M2hwNVFWSGFwN051YTQ2QUFKcGtYRkpOLUFGYVNuaG50SnRWZVBWVWpvd29OMDdBZU5tUXc1NWlMT3AzRVg3LXRfV1RLdlF1UzQxQjJrdFdJdzNKdmNLWWNCZUhDanFHWFlLdmRhS01oUGw3NzBDMUZKLVZCX1FRVDRjPQ==
+  license_type: trial
+  server_url: http://localhost:9999
+llm:
+  fallback_to_rules: true
+  provider: vllm
+neo4j:
+  auto_sync: true
+  database: neo4j
+  enabled: true
+  include_in_context: true
+  max_relationship_depth: 2
+  password: ''
+  uri: bolt://10.198.231.246:7687
+  username: neo4j
+ollama:
+  api_url: http://localhost:11434/api/chat
+  max_tokens: 2048
+  model: mistral:latest
+  stream: false
+  temperature: 0.7
+ontology:
+  auto_mapping: true
+  confidence_threshold: 0.7
+  content: "services:\n  ollama:\n    deploy:\n      resources:\n        reservations:\n\
+    \          devices:\n            - driver: nvidia\n              count: all\n\
+    \              capabilities: [gpu]\n    runtime: nvidia\n    image: ollama/ollama\
+    \ \n    environment:\n      - 'HSA_OVERRIDE_GFX_VERSION=${HSA_OVERRIDE_GFX_VERSION-11.0.0}'\
+    \ # Optional, can be removed for NVIDIA\n    ports:\n      - \"11434:11434\" #\
+    \ Expose the default port of ollama\n    volumes:\n      - ./ollama/models:/root/.ollama/models\
+    \ # Mount the custom model directory\n"
+  custom_file: null
+  dynamic_generation:
+    enabled: true
+  enabled: true
+  format: owl
+  include_in_context: true
+openai:
+  api_key: ''
+  max_tokens: 16000
+  model: gpt-4o-mini-2024-07-18
+  temperature: 1.0
+  top_p: 1.0
+server:
+  host: 0.0.0.0
+  port: 8088
+  workers: 1
+vllm:
+  api_url: http://10.198.231.246:8000/v1/chat/completions
+  max_tokens: 2048
+  model: /models
+  temperature: 0.7
+  top_p: 1

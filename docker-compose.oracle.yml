@@ -45,6 +45,11 @@ services:
     networks:
       - databaseai-network
     restart: unless-stopped
+    volumes:
+      # Mount config file
+      # - ./app_config.yml:/usr/dataconfig/app_config.yml:ro
+      # SQLite data directory (for file-based SQLite databases)
+      - ./sqlite-data:/app/sqlite-data
 
 volumes:
   oracle-data:

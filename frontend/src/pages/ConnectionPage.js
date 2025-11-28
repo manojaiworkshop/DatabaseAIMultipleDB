@@ -92,7 +92,25 @@ const ConnectionPage = () => {
     setSuccess('');
 
     try {
-      const response = await api.connectDatabase(formData);
+      // Prepare payload - for SQLite, send only relevant fields
+      let payload = { ...formData };
+      
+      if (formData.database_type === 'sqlite') {
+        // For SQLite, only send file_path and database_type
+        payload = {
+          database_type: formData.database_type,
+          file_path: formData.file_path,
+          host: null,
+          port: null,
+          database: null,
+          username: null,
+          password: null,
+          use_docker: false,
+          docker_container: null
+        };
+      }
+      
+      const response = await api.connectDatabase(payload);
       
       if (response.success) {
         // Handle different database types in success message
