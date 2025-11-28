@@ -457,6 +457,7 @@ const ChatPage = () => {
             <div className="flex-1 overflow-hidden">
               <SchemaTreeView 
                 onCopy={handleSchemaCopy}
+                filteredSchema={databaseSchema}
               />
             </div>
           </div>

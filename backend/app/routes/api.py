@@ -147,6 +147,60 @@ async def get_schema_snapshot(schema_name: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.post("/database/select-tables")
+async def select_tables(request: Dict[str, Any]):
+    """
+    Set which tables the user wants to work with
+    Request body: { "tables": ["table1", "table2", ...] }
+    """
+    try:
+        tables = request.get("tables", [])
+        
+        if not isinstance(tables, list):
+            raise HTTPException(status_code=400, detail="tables must be a list")
+        
+        # If empty list, clear selection (show all)
+        if len(tables) == 0:
+            db_service.clear_selected_tables()
+            return {
+                "success": True,
+                "message": "Table selection cleared, showing all tables"
+            }
+        
+        db_service.set_selected_tables(tables)
+        
+        return {
+            "success": True,
+            "message": f"Selected {len(tables)} tables",
+            "selected_count": len(tables)
+        }
+        
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail="Database not connected")
+    except Exception as e:
+        logger.error(f"Failed to set selected tables: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/database/selected-tables")
+async def get_selected_tables():
+    """
+    Get list of currently selected tables
+    """
+    try:
+        selected = db_service.get_selected_tables()
+        
+        return {
+            "success": True,
+            "selected_tables": selected if selected is not None else [],
+            "is_filtered": selected is not None
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get selected tables: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/query", response_model=QueryResponse)
 async def query_database(
     request: QueryRequest, 
@@ -277,6 +331,7 @@ async def disconnect_database():
         db_service.connection_params = None
         db_service.schema_cache = None
         db_service.cache_timestamp = None
+        db_service.selected_tables = None  # Clear table selection on disconnect
         
         return {
             "success": True,

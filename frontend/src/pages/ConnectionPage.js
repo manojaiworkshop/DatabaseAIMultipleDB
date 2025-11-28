@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Database, Loader2, CheckCircle, XCircle, Server } from 'lucide-react';
 import { api } from '../services/api';
+import TableSelectionModal from '../components/TableSelectionModal';
 
 const ConnectionPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showTableModal, setShowTableModal] = useState(false);
+  const [connectionResponse, setConnectionResponse] = useState(null);
   
   const [formData, setFormData] = useState({
     database_type: 'postgresql',
@@ -130,18 +133,11 @@ const ConnectionPage = () => {
         
         setSuccess(`Connected successfully! Database: ${dbIdentifier}`);
         
-        // Extract schema from connection response
-        const schema = response.database_info?.schema || null;
+        // Store connection response
+        setConnectionResponse(response);
         
-        // Navigate to chat with schema data
-        setTimeout(() => {
-          navigate('/chat', { 
-            state: { 
-              schema: schema,
-              databaseInfo: response.database_info 
-            } 
-          });
-        }, 1000);
+        // Show table selection modal
+        setShowTableModal(true);
       } else {
         setError(response.message || 'Connection failed');
       }
@@ -150,6 +146,65 @@ const ConnectionPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleTableSelection = async (selectedTables) => {
+    try {
+      // Send selected tables to backend
+      await api.selectTables(selectedTables);
+      
+      // Close modal
+      setShowTableModal(false);
+      
+      // Extract schema from connection response and filter by selected tables
+      const schema = connectionResponse?.database_info?.schema || null;
+      
+      if (schema && schema.tables) {
+        // Filter schema to only include selected tables
+        const filteredSchema = {
+          ...schema,
+          tables: schema.tables.filter(table => 
+            selectedTables.includes(table.table_name) || 
+            selectedTables.includes(table.full_name)
+          ),
+          total_tables: selectedTables.length
+        };
+        
+        // Navigate to chat with filtered schema
+        navigate('/chat', { 
+          state: { 
+            schema: filteredSchema,
+            databaseInfo: connectionResponse.database_info,
+            selectedTables: selectedTables
+          } 
+        });
+      } else {
+        // Fallback if no schema
+        navigate('/chat', { 
+          state: { 
+            databaseInfo: connectionResponse.database_info,
+            selectedTables: selectedTables
+          } 
+        });
+      }
+    } catch (err) {
+      setError(err.response?.data?.detail || err.message || 'Failed to set table selection');
+      setShowTableModal(false);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowTableModal(false);
+    setConnectionResponse(null);
+    setSuccess('');
+  };
+
+  // Extract table names from schema for modal
+  const getTableList = () => {
+    const schema = connectionResponse?.database_info?.schema;
+    if (!schema || !schema.tables) return [];
+    
+    return schema.tables.map(table => table.full_name || table.table_name);
   };
 
   return (
@@ -482,6 +537,14 @@ const ConnectionPage = () => {
           Your connection details are secure and only stored in memory
         </p>
       </div>
+
+      {/* Table Selection Modal */}
+      <TableSelectionModal
+        isOpen={showTableModal}
+        onClose={handleCloseModal}
+        allTables={getTableList()}
+        onSubmit={handleTableSelection}
+      />
     </div>
   );
 };

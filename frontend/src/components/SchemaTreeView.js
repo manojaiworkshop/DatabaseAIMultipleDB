@@ -5,13 +5,15 @@ import { api } from '../services/api';
 /**
  * SchemaTreeView Component with Schema Dropdown
  * Displays database schema in a tree structure with schema selection
+ * @param {Object} filteredSchema - Optional pre-filtered schema from parent (e.g., selected tables only)
  */
-const SchemaTreeView = ({ onCopy }) => {
+const SchemaTreeView = ({ onCopy, filteredSchema }) => {
   const [schemas, setSchemas] = useState([]);
   const [selectedSchema, setSelectedSchema] = useState(null);
   const [schemaData, setSchemaData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [useFilteredSchema, setUseFilteredSchema] = useState(false);
   
   const [expandedDatabase, setExpandedDatabase] = useState(true);
   const [expandedTablesCategory, setExpandedTablesCategory] = useState(true);
@@ -20,17 +22,33 @@ const SchemaTreeView = ({ onCopy }) => {
   const [expandedViews, setExpandedViews] = useState(new Set());
   const [showColumnDetail, setShowColumnDetail] = useState(null);
 
-  // Fetch all schemas on mount
+  // Use filtered schema if provided from parent
   useEffect(() => {
-    fetchSchemas();
-  }, []);
+    if (filteredSchema && filteredSchema.tables) {
+      console.log('Using filtered schema from parent:', filteredSchema);
+      setSchemaData(filteredSchema);
+      setUseFilteredSchema(true);
+      setLoading(false);
+      setExpandedDatabase(true);
+      setExpandedTablesCategory(true);
+    } else {
+      setUseFilteredSchema(false);
+    }
+  }, [filteredSchema]);
 
-  // Fetch schema snapshot when selection changes
+  // Fetch all schemas on mount (only if no filtered schema provided)
   useEffect(() => {
-    if (selectedSchema) {
+    if (!useFilteredSchema) {
+      fetchSchemas();
+    }
+  }, [useFilteredSchema]);
+
+  // Fetch schema snapshot when selection changes (only if no filtered schema)
+  useEffect(() => {
+    if (selectedSchema && !useFilteredSchema) {
       fetchSchemaSnapshot(selectedSchema);
     }
-  }, [selectedSchema]);
+  }, [selectedSchema, useFilteredSchema]);
 
   const fetchSchemas = async () => {
     try {
@@ -132,30 +150,41 @@ const SchemaTreeView = ({ onCopy }) => {
       {/* Header */}
       <div className="p-4 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
         <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">
-          Database Schema
+          {useFilteredSchema ? 'Selected Tables' : 'Database Schema'}
         </h3>
         
-        {/* Schema Dropdown */}
-        <div className="relative">
-          <label className="block text-xs font-medium text-gray-600 mb-1">
-            Select Schema
-          </label>
+        {/* Schema Dropdown - Only show when not using filtered schema */}
+        {!useFilteredSchema && (
           <div className="relative">
-            <select
-              value={selectedSchema || ''}
-              onChange={handleSchemaChange}
-              className="w-full px-3 py-2 pr-8 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer hover:border-blue-400 transition-colors"
-              disabled={loading}
-            >
-              {schemas.map((schema) => (
-                <option key={schema.schema_name} value={schema.schema_name}>
-                  {schema.schema_name} ({schema.table_count} tables, {schema.view_count} views)
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+            <label className="block text-xs font-medium text-gray-600 mb-1">
+              Select Schema
+            </label>
+            <div className="relative">
+              <select
+                value={selectedSchema || ''}
+                onChange={handleSchemaChange}
+                className="w-full px-3 py-2 pr-8 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer hover:border-blue-400 transition-colors"
+                disabled={loading}
+              >
+                {schemas.map((schema) => (
+                  <option key={schema.schema_name} value={schema.schema_name}>
+                    {schema.schema_name} ({schema.table_count} tables, {schema.view_count} views)
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+            </div>
           </div>
-        </div>
+        )}
+        
+        {/* Show info when using filtered schema */}
+        {useFilteredSchema && schemaData && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-2 mt-2">
+            <p className="text-xs text-blue-800">
+              Showing {schemaData.total_tables || schemaData.tables?.length || 0} selected table{(schemaData.total_tables || schemaData.tables?.length) !== 1 ? 's' : ''}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Tree Content */}

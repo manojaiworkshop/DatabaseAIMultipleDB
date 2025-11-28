@@ -81,6 +81,18 @@ export const api = {
     return response.data;
   },
 
+  // Select tables to work with
+  selectTables: async (tables) => {
+    const response = await apiClient.post('/database/select-tables', { tables });
+    return response.data;
+  },
+
+  // Get selected tables
+  getSelectedTables: async () => {
+    const response = await apiClient.get('/database/selected-tables');
+    return response.data;
+  },
+
   // Query database
   queryDatabase: async (queryData) => {
     const response = await apiClient.post('/query', queryData);

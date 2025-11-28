@@ -34,6 +34,7 @@ class DatabaseService:
         self.schema_cache = None
         self.cache_timestamp = None
         self.schema_snapshots = {}  # Store snapshots per schema: {schema_name: snapshot_data}
+        self.selected_tables = None  # Store user-selected tables for filtering
         
     def set_connection(self, database_type: str = "postgresql",
                       host: Optional[str] = None, 
@@ -85,6 +86,25 @@ class DatabaseService:
     def get_database_type(self) -> str:
         """Get current database type"""
         return self.database_type
+    
+    def set_selected_tables(self, table_names: List[str]):
+        """Set the list of tables user wants to work with"""
+        self.selected_tables = table_names
+        # Clear cache when selection changes
+        self.schema_cache = None
+        self.cache_timestamp = None
+        logger.info(f"Selected tables set: {len(table_names)} tables")
+    
+    def get_selected_tables(self) -> Optional[List[str]]:
+        """Get the list of selected tables"""
+        return self.selected_tables
+    
+    def clear_selected_tables(self):
+        """Clear table selection (show all tables)"""
+        self.selected_tables = None
+        self.schema_cache = None
+        self.cache_timestamp = None
+        logger.info("Table selection cleared")
         
     def get_connection(self):
         """Get database connection through adapter"""
@@ -299,6 +319,23 @@ class DatabaseService:
             
             # Get snapshot from adapter
             snapshot = self.adapter.get_database_snapshot()
+            
+            # Filter by selected tables if user has made a selection
+            if self.selected_tables is not None:
+                logger.info(f"Filtering snapshot to {len(self.selected_tables)} selected tables")
+                filtered_tables = []
+                
+                for table in snapshot.get('tables', []):
+                    # Check both table_name and full_name (schema.table)
+                    table_name = table.get('table_name', '')
+                    full_name = table.get('full_name', '')
+                    
+                    if table_name in self.selected_tables or full_name in self.selected_tables:
+                        filtered_tables.append(table)
+                
+                snapshot['tables'] = filtered_tables
+                snapshot['total_tables'] = len(filtered_tables)
+                logger.info(f"Filtered snapshot: {len(filtered_tables)} tables out of {snapshot.get('total_tables', 0)}")
             
             # Cache the result
             self.schema_cache = snapshot
